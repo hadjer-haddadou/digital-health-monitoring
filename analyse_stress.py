@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+
+
 data = pd.read_csv('dataset.csv')
 
 # Renommage des colonnes pour plus de clarté
@@ -109,3 +111,50 @@ axes[2].set_title('Indice de Détresse Physique')
 
 plt.tight_layout()
 plt.show()
+
+#========================================
+# Maching Learning
+#========================================
+features = data [['Cardio_Resp_Ratio', 'REM_Density', 'Physical_Distress']]
+#isolation des bio marqueurs dans un nouveau tableau
+target = data ['Stress_Level']
+# tableau qui contient le verdict du medecin
+
+#séparation de sujets d'entrainement et de test
+from sklearn.model_selection import train_test_split
+features_train, features_test, target_train, target_test = train_test_split(features, target, test_size = 0.2, random_state=42)
+
+print(f"Nombre de patients pour l'entraînement : {len(features_train)}")
+print(f"Nombre de patients pour le test : {len(features_test)}")
+
+# modèle d'IA (random forest)
+from sklearn.ensemble import RandomForestClassifier
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+#entrainement du model
+model.fit(features_train, target_train)
+
+#test
+predictions = model.predict(features_test)
+#print(f"prédictions : {predictions}")
+
+
+
+#  création d'un tableau de comparaison
+comparaison = pd.DataFrame(
+    {'Vrai Stress (Corrigé)': target_test, 'Stress Prédit (IA)': predictions}
+)
+
+# affiche les 10 premiers patients pour comparer
+print(comparaison.head(10))
+
+from sklearn.metrics import accuracy_score
+
+# calcule le pourcentage de bonnes réponses
+score = accuracy_score(target_test, predictions)
+
+print(f"Précision globale de l'IA : {score * 100:.2f}%")
+
+from sklearn.metrics import classification_report
+
+print(classification_report(target_test, predictions))
