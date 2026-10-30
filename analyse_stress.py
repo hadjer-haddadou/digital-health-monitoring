@@ -120,6 +120,8 @@ features = data [['Cardio_Resp_Ratio', 'REM_Density', 'Physical_Distress']]
 target = data ['Stress_Level']
 # tableau qui contient le verdict du medecin
 
+
+
 #séparation de sujets d'entrainement et de test
 from sklearn.model_selection import train_test_split
 features_train, features_test, target_train, target_test = train_test_split(features, target, test_size = 0.2, random_state=42)
@@ -130,6 +132,17 @@ print(f"Nombre de patients pour le test : {len(features_test)}")
 # modèle d'IA (random forest)
 from sklearn.ensemble import RandomForestClassifier
 model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+
+# ==========================================
+# TEST DE ROBUSTESSE : VALIDATION CROISÉE
+# ==========================================
+# On découpe le dataset en 5 parties (cv=5) pour s'assurer 
+# que le score parfait n'est pas un coup de chance ou du surapprentissage.
+
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(model, features, target, cv=5)
+print(f"Scores de validation croisée (sur 5 plis) : {scores}")
 
 #entrainement du model
 model.fit(features_train, target_train)
@@ -158,3 +171,15 @@ print(f"Précision globale de l'IA : {score * 100:.2f}%")
 from sklearn.metrics import classification_report
 
 print(classification_report(target_test, predictions))
+
+#analyse des erreurs a travers la precision et le rappel 
+#eviter les faux négatif  & les faux positifs 
+
+
+from sklearn.metrics import confusion_matrix 
+matrix = confusion_matrix(target_test, predictions)
+print(f"Voici la matrice de confusion pour deceler les faux positif et les faux negatifs : {matrix}")
+
+importances = model.feature_importances_
+print(f"Importances des biomarqueurs : {importances}")
+
