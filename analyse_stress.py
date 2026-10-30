@@ -182,4 +182,3 @@ print(f"Voici la matrice de confusion pour deceler les faux positif et les faux 
 
 importances = model.feature_importances_
 print(f"Importances des biomarqueurs : {importances}")
-
