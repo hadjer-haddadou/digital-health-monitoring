@@ -110,6 +110,7 @@ sns.stripplot(data=data, x='Stress_Level', y='Physical_Distress', ax=axes[2], al
 axes[2].set_title('Indice de Détresse Physique')
 
 plt.tight_layout()
+plt.savefig('biomarqueurs_stress.png', dpi=300, bbox_inches='tight') # Enregistre l'image en haute qualité
 plt.show()
 
 #========================================
